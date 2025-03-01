@@ -37,8 +37,8 @@ impl Vec3 {
     self.len_squared().sqrt()
   }
 
-  pub fn dot(lhs: Vec3, rhs: Vec3) -> f32 {
-    lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z
+  pub fn dot(&self, rhs: Vec3) -> f32 {
+    self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
   }
 
   pub fn cross(lhs: Vec3, rhs: Vec3) -> Self {
@@ -59,7 +59,7 @@ impl Vec3 {
   }
 
   pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
-    v - 2.0 * Vec3::dot(v, n) * n
+    v - 2.0 * v.dot(n) * n
   }
 }
 
@@ -158,7 +158,7 @@ impl Vec3 {
 
   pub fn random_in_hemisphere(normal: Vec3) -> Vec3 {
     let in_unit_sphere = Vec3::random_in_unit_sphere();
-    if Vec3::dot(in_unit_sphere, normal) > 0.0 {
+    if in_unit_sphere.dot(normal) > 0.0 {
       return in_unit_sphere;
     }
     -in_unit_sphere
