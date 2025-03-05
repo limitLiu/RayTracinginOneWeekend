@@ -8,18 +8,18 @@ class MetalView: UIView {
   private var vertexBuffer: MTLBuffer!
   private var texture: MTLTexture?
   private var pipelineState: MTLRenderPipelineState!
-  
+
   override class var layerClass: AnyClass {
     CAMetalLayer.self
   }
-  
+
   override var frame: CGRect {
     didSet {
       let bytes = generateRawData(UInt(bounds.width), UInt(bounds.height))
       updateTexture(from: Array(bytes), width: bounds.width, height: bounds.height)
     }
   }
-  
+
   required init?(coder: NSCoder) {
     super.init(coder: coder)
     setup()
@@ -35,7 +35,7 @@ extension MetalView {
     metalLayer.contentsScale = UIWindow.first?.screen.scale ?? 3
     commandQueue = device.makeCommandQueue()
   }
-  
+
   private func setupPipeline() {
     let library = device.makeDefaultLibrary()
     let vertexFn = library?.makeFunction(name: "vertex_fn")
@@ -50,17 +50,17 @@ extension MetalView {
       fatalError("Failed to create pipeline state: \(error)")
     }
   }
-  
+
   private func setupVertexBuffer() {
     let vertices: [Float] = [
-      -1,  1,  0, 1,
-       1,  1,  1, 1,
-      -1, -1,  0, 0,
-       1, -1,  1, 0
+      -1, 1, 0, 1,
+      1, 1, 1, 1,
+      -1, -1, 0, 0,
+      1, -1, 1, 0,
     ]
     vertexBuffer = device.makeBuffer(bytes: vertices, length: vertices.count * MemoryLayout<Float>.size, options: [])
   }
-  
+
   func updateTexture(from rawData: [UInt8], width: CGFloat, height: CGFloat) {
     let descriptor = MTLTextureDescriptor()
     descriptor.pixelFormat = .rgba8Unorm
@@ -79,26 +79,26 @@ extension MetalView {
     }
     drawFrame()
   }
-  
+
   func drawFrame() {
     guard let drawable = metalLayer.nextDrawable(),
-          let pipelineState = pipelineState,
+          let pipelineState,
           let commandBuffer = commandQueue.makeCommandBuffer(),
           let renderPassDescriptor = currentRenderPassDescriptor(for: drawable),
           let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor),
-          let vertexBuffer = vertexBuffer,
-          let texture = texture else { return }
-    
+          let vertexBuffer,
+          let texture else { return }
+
     renderEncoder.setRenderPipelineState(pipelineState)
     renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
     renderEncoder.setFragmentTexture(texture, index: 0)
     renderEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
-    
+
     renderEncoder.endEncoding()
     commandBuffer.present(drawable)
     commandBuffer.commit()
   }
-  
+
   private func currentRenderPassDescriptor(for drawable: CAMetalDrawable) -> MTLRenderPassDescriptor? {
     let renderPassDescriptor = MTLRenderPassDescriptor()
     renderPassDescriptor.colorAttachments[0].texture = drawable.texture
