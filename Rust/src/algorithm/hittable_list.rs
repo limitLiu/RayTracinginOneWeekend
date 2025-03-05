@@ -1,4 +1,5 @@
 use super::hittable::{HitRecord, Hittable};
+use super::interval::Interval;
 use super::ray::Ray;
 
 #[derive(Default)]
@@ -29,11 +30,11 @@ impl<T> Hittable for HittableList<T>
 where
   T: Hittable,
 {
-  fn hit(&self, ray: Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+  fn hit(&self, ray: Ray, interval: Interval) -> Option<HitRecord> {
     let mut ret = None;
-    let mut close_so_far = t_max;
+    let mut close_so_far = interval.max;
     for obj in self.objects.iter() {
-      if let Some(record) = obj.hit(ray, t_min, close_so_far) {
+      if let Some(record) = obj.hit(ray, Interval::new(interval.min, close_so_far)) {
         close_so_far = record.t;
         ret = Some(record);
       }

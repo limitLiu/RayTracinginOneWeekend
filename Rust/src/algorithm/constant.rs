@@ -1,1 +1,1 @@
-pub const SAMPLES_PER_PIXEL: u64 = 100;
+pub const SAMPLES_PER_PIXEL: usize = 100;

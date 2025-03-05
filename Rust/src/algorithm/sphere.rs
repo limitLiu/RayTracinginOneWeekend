@@ -1,4 +1,5 @@
 use super::hittable::{HitRecord, Hittable};
+use super::interval::Interval;
 use super::ray::Ray;
 use super::vec3::Vec3;
 
@@ -15,7 +16,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-  fn hit(&self, ray: Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
+  fn hit(&self, ray: Ray, interval: Interval) -> Option<HitRecord> {
     let oc = self.center - ray.origin;
     let a = ray.direction.len_squared();
     let h = ray.direction.dot(oc);
@@ -27,9 +28,9 @@ impl Hittable for Sphere {
 
     let sqrt_d = discriminant.sqrt();
     let mut root = (h - sqrt_d) / a;
-    if root <= t_min || t_max <= root {
+    if !interval.surrounds(root) {
       root = (h + sqrt_d) / a;
-      if root <= t_min || t_max <= root {
+      if !interval.surrounds(root) {
         return None;
       }
     }
