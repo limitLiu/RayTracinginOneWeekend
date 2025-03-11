@@ -6,11 +6,11 @@ use super::vec3::Vec3;
 #[derive(Default)]
 pub struct Sphere {
   pub center: Vec3,
-  pub radius: f32,
+  pub radius: f64,
 }
 
 impl Sphere {
-  pub fn new(center: Vec3, radius: f32) -> Sphere {
+  pub fn new(center: Vec3, radius: f64) -> Sphere {
     Sphere { center, radius }
   }
 }
@@ -20,7 +20,7 @@ impl Hittable for Sphere {
     let oc = self.center - ray.origin;
     let a = ray.direction.len_squared();
     let h = ray.direction.dot(oc);
-    let c = oc.len_squared() - self.radius.powf(2f32);
+    let c = oc.len_squared() - self.radius.powf(2f64);
     let discriminant = h * h - a * c;
     if discriminant < 0. {
       return None;

@@ -1,1 +1,2 @@
-pub const SAMPLES_PER_PIXEL: usize = 100;
+pub const SAMPLES_PER_PIXEL: i32 = 100;
+pub const MAX_DEPTH: i32 = 2;

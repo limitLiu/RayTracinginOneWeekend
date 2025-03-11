@@ -1,8 +1,7 @@
-use rand::Rng;
-use rand::rngs::ThreadRng;
+use rand::{Rng, rngs::ThreadRng};
 
 use super::color::{Color, color_to_byte};
-use super::constant::SAMPLES_PER_PIXEL;
+use super::constant::{MAX_DEPTH, SAMPLES_PER_PIXEL};
 use super::hittable::Hittable;
 use super::interval::Interval;
 use super::ray::Ray;
@@ -16,23 +15,23 @@ pub struct Camera {
   pixel_delta_u: Vec3,
   pixel_delta_v: Vec3,
   pixel00_loc: Vec3,
-  pixel_samples_scale: f32,
+  pixel_samples_scale: f64,
 }
 
 impl Camera {
   pub fn new(width: usize, height: usize) -> Camera {
-    let w = width as f32;
-    let h = height as f32;
+    let w = width as f64;
+    let h = height as f64;
 
     let aspect_ratio = w / h;
     let center = Vec3::zero();
-    let focal_len = 1f32;
+    let focal_len = 1f64;
 
-    let viewport_height = 2f32;
+    let viewport_height = 2f64;
     let viewport_width = aspect_ratio * viewport_height;
 
-    let viewport_u = Vec3::new(viewport_width, 0f32, 0f32);
-    let viewport_v = Vec3::new(0f32, viewport_height, 0f32);
+    let viewport_u = Vec3::new(viewport_width, 0f64, 0f64);
+    let viewport_v = Vec3::new(0f64, viewport_height, 0f64);
 
     let pixel_delta_u = viewport_u / w;
     let pixel_delta_v = viewport_v / h;
@@ -40,7 +39,7 @@ impl Camera {
       center - Vec3::new(0., 0., focal_len) - viewport_u / 2. - viewport_v / 2.;
     let pixel00_loc = viewport_lower_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
-    let pixel_samples_scale = 1f32 / SAMPLES_PER_PIXEL as f32;
+    let pixel_samples_scale = 1f64 / SAMPLES_PER_PIXEL as f64;
 
     Camera {
       width,
@@ -62,12 +61,12 @@ impl Camera {
     let mut rng = rand::rng();
     for j in 0..self.height {
       for i in 0..self.width {
-        let i = i as f32;
-        let j = j as f32;
+        let i = i as f64;
+        let j = j as f64;
         let mut pixel_color = Color::zero();
         for _ in 0..SAMPLES_PER_PIXEL {
           let ray = self.ray(&mut rng, i, j);
-          pixel_color += Self::ray_color(ray, world);
+          pixel_color += Self::ray_color(ray, MAX_DEPTH, world);
         }
         let (r, g, b) = color_to_byte(self.pixel_samples_scale * pixel_color);
         vector.push(r);
@@ -79,8 +78,8 @@ impl Camera {
     vector
   }
 
-  fn ray(&self, rng: &mut ThreadRng, i: f32, j: f32) -> Ray {
-    let offset = Vec3::new(rng.random::<f32>() - 0.5, rng.random::<f32>() - 0.5, 0.);
+  fn ray(&self, rng: &mut ThreadRng, i: f64, j: f64) -> Ray {
+    let offset = Vec3::new(rng.random::<f64>() - 0.5, rng.random::<f64>() - 0.5, 0.);
     let pixel_sample = self.pixel00_loc
       + ((i + offset.x) * self.pixel_delta_u)
       + ((j + offset.y) * self.pixel_delta_v);
@@ -88,12 +87,16 @@ impl Camera {
     Ray::new(self.center, ray_direction)
   }
 
-  fn ray_color<T>(ray: Ray, world: &T) -> Color
+  fn ray_color<T>(ray: Ray, depth: i32, world: &T) -> Color
   where
     T: Hittable,
   {
-    if let Some(record) = world.hit(ray, Interval::new(0f32, f32::INFINITY)) {
-      0.5 * (record.normal + Color::one())
+    if depth <= 0 {
+      return Color::zero();
+    }
+    if let Some(record) = world.hit(ray, Interval::new(0.001, f64::INFINITY)) {
+      let direction = Vec3::random_on_hemisphere(record.normal);
+      0.5 * Self::ray_color(Ray::new(record.point, direction), depth - 1, world)
     } else {
       let unit_direction = ray.direction.normalization();
       let t = 0.5 * (unit_direction.y + 1.0);
