@@ -95,7 +95,7 @@ impl Camera {
       return Color::zero();
     }
     if let Some(record) = world.hit(ray, Interval::new(0.001, f64::INFINITY)) {
-      let direction = Vec3::random_on_hemisphere(record.normal);
+      let direction = record.normal + Vec3::random_unit_vector();
       0.5 * Self::ray_color(Ray::new(record.point, direction), depth - 1, world)
     } else {
       let unit_direction = ray.direction.normalization();
