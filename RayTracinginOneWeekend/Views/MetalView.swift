@@ -9,16 +9,7 @@ class MetalView: UIView {
   private var texture: MTLTexture?
   private var pipelineState: MTLRenderPipelineState!
 
-  override class var layerClass: AnyClass {
-    CAMetalLayer.self
-  }
-
-  override var frame: CGRect {
-    didSet {
-      let bytes = generateRawData(UInt(bounds.width), UInt(bounds.height))
-      updateTexture(from: Array(bytes), width: bounds.width, height: bounds.height)
-    }
-  }
+  override class var layerClass: AnyClass { CAMetalLayer.self }
 
   required init?(coder: NSCoder) {
     super.init(coder: coder)
@@ -106,5 +97,11 @@ extension MetalView {
     renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColor(red: 0, green: 0, blue: 0, alpha: 1)
     renderPassDescriptor.colorAttachments[0].storeAction = .store
     return renderPassDescriptor
+  }
+
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    let bytes = generateRawData(UInt(bounds.width), UInt(bounds.height))
+    updateTexture(from: Array(bytes), width: bounds.width, height: bounds.height)
   }
 }
