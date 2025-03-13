@@ -23,7 +23,7 @@ extension MetalView {
   private func setup() {
     metalLayer.device = device
     metalLayer.pixelFormat = .bgra8Unorm
-    metalLayer.contentsScale = UIWindow.first?.screen.scale ?? 3
+    metalLayer.contentsScale = UIScreen.main.scale
     commandQueue = device.makeCommandQueue()
   }
 
