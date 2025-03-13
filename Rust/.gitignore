@@ -5,3 +5,4 @@ Algorithm/*
 !Algorithm/.gitkeep
 generated/*
 !generated/.gitkeep
+rustc-ice-*.txt

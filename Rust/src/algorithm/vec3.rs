@@ -58,8 +58,9 @@ impl Vec3 {
     self.x.abs() < border && self.y.abs() < border && self.z.abs() < border
   }
 
-  pub fn reflect(v: Vec3, n: Vec3) -> Vec3 {
-    v - 2.0 * v.dot(n) * n
+  #[inline]
+  pub fn reflect(&self, normal: Vec3) -> Vec3 {
+    *self - 2.0 * self.dot(normal) * normal
   }
 }
 

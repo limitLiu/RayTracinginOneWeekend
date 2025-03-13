@@ -3,21 +3,18 @@ use super::interval::Interval;
 use super::ray::Ray;
 
 #[derive(Default)]
-pub struct HittableList<T> {
-  pub objects: Vec<Box<T>>,
+pub struct HittableList {
+  pub objects: Vec<Box<dyn Hittable>>,
 }
 
-impl<T> HittableList<T>
-where
-  T: Hittable,
-{
-  pub fn new() -> HittableList<T> {
+impl HittableList {
+  pub fn new() -> Self {
     HittableList {
       objects: Vec::new(),
     }
   }
 
-  pub fn add(&mut self, object: Box<T>) {
+  pub fn add(&mut self, object: Box<dyn Hittable>) {
     self.objects.push(object);
   }
 
@@ -26,10 +23,7 @@ where
   }
 }
 
-impl<T> Hittable for HittableList<T>
-where
-  T: Hittable,
-{
+impl Hittable for HittableList {
   fn hit(&self, ray: Ray, interval: Interval) -> Option<HitRecord> {
     let mut ret = None;
     let mut close_so_far = interval.max;
