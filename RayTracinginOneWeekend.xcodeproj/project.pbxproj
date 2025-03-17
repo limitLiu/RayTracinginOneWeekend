@@ -54,11 +54,15 @@
 		};
 		0F0C53982D70C3B500C86C70 /* RayTracinginOneWeekendTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = RayTracinginOneWeekendTests;
 			sourceTree = "<group>";
 		};
 		0F0C53A22D70C3B500C86C70 /* RayTracinginOneWeekendUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = RayTracinginOneWeekendUITests;
 			sourceTree = "<group>";
 		};
@@ -106,8 +110,44 @@
 				0F0C537F2D70C3B400C86C70 /* RayTracinginOneWeekend.app */,
 				0F0C53952D70C3B500C86C70 /* RayTracinginOneWeekendTests.xctest */,
 				0F0C539F2D70C3B500C86C70 /* RayTracinginOneWeekendUITests.xctest */,
+				86E9707C23D03FE22B9747EE /* Rust */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		645D81B4C4A5C8D86988E1A5 /* algorithm */ = {
+			isa = PBXGroup;
+			children = (
+				64B09AD5BA01A03046F3FB95 /* material */,
+			);
+			name = algorithm;
+			path = algorithm;
+			sourceTree = "<group>";
+		};
+		64B09AD5BA01A03046F3FB95 /* material */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = material;
+			path = material;
+			sourceTree = "<group>";
+		};
+		86E9707C23D03FE22B9747EE /* Rust */ = {
+			isa = PBXGroup;
+			children = (
+				DB31F7C8180B4E0772BE3A79 /* src */,
+			);
+			name = Rust;
+			path = Rust;
+			sourceTree = "<group>";
+		};
+		DB31F7C8180B4E0772BE3A79 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				645D81B4C4A5C8D86988E1A5 /* algorithm */,
+			);
+			name = src;
+			path = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,8 +193,6 @@
 				0F0C53982D70C3B500C86C70 /* RayTracinginOneWeekendTests */,
 			);
 			name = RayTracinginOneWeekendTests;
-			packageProductDependencies = (
-			);
 			productName = RayTracinginOneWeekendTests;
 			productReference = 0F0C53952D70C3B500C86C70 /* RayTracinginOneWeekendTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -176,8 +214,6 @@
 				0F0C53A22D70C3B500C86C70 /* RayTracinginOneWeekendUITests */,
 			);
 			name = RayTracinginOneWeekendUITests;
-			packageProductDependencies = (
-			);
 			productName = RayTracinginOneWeekendUITests;
 			productReference = 0F0C539F2D70C3B500C86C70 /* RayTracinginOneWeekendUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -216,7 +252,7 @@
 			mainGroup = 0F0C53762D70C3B400C86C70;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Rust/Algorithm" */,
+				0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Algorithm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0F0C53802D70C3B400C86C70 /* Products */;
@@ -583,7 +619,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Rust/Algorithm" */ = {
+		0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Algorithm" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Rust/Algorithm;
 		};
