@@ -29,6 +29,8 @@ pub fn generate_raw_data(width: usize, height: usize) -> Vec<u8> {
     Vec3::new(0., 0., -1.),
     Vec3::new(0., 1., 0.),
   );
+  camera.defocus_angle = 10.;
+  camera.focus_dist = 3.4;
   camera.vfov = 20.;
   camera.render(&world)
 }

@@ -18,13 +18,15 @@ fn main() {
     use std::collections::HashMap;
     use swift_bridge_build::{ApplePlatform, CreatePackageConfig};
     let profile = std::env::var("PROFILE").unwrap();
-    let ios = format!("target/aarch64-apple-ios/{}/libalgorithm.a", profile);
     let simulator = format!("target/aarch64-apple-ios-sim/{}/libalgorithm.a", profile);
+    let ios = format!("target/aarch64-apple-ios/{}/libalgorithm.a", profile);
+    let macos = format!("target/{}/libalgorithm.a", profile);
     swift_bridge_build::create_package(CreatePackageConfig {
       bridge_dir: out_dir,
       paths: HashMap::from([
-        (ApplePlatform::IOS, ios.into()),
         (ApplePlatform::Simulator, simulator.into()),
+        (ApplePlatform::IOS, ios.into()),
+        (ApplePlatform::MacOS, macos.into()),
       ]),
       out_dir: PathBuf::from("Algorithm"),
       package_name: String::from("Algorithm"),
