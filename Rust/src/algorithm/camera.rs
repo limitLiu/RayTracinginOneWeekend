@@ -1,7 +1,6 @@
 use rand::{Rng, rngs::ThreadRng};
 
 use super::color::{Color, color_to_byte};
-use super::constant::{MAX_DEPTH, SAMPLES_PER_PIXEL};
 use super::hittable::Hittable;
 use super::interval::Interval;
 use super::ray::Ray;
@@ -10,9 +9,17 @@ use super::vec3::Vec3;
 pub struct Camera {
   pub width: usize,
   pub height: usize,
+  pub samples_per_pixel: i32,
+  pub max_depth: i32,
   pub vfov: f64,
+  pub look_from: Vec3,
+  pub look_at: Vec3,
+  pub vup: Vec3,
 
   center: Vec3,
+  u: Vec3,
+  v: Vec3,
+  w: Vec3,
   pixel_delta_u: Vec3,
   pixel_delta_v: Vec3,
   pixel00_loc: Vec3,
@@ -20,46 +27,71 @@ pub struct Camera {
 }
 
 impl Camera {
-  pub fn new(width: usize, height: usize, vfov: f64) -> Camera {
-    let width = width as f64;
-    let height = height as f64;
-
-    let aspect_ratio = width / height;
-    let center = Vec3::zero();
-    let focal_len = 1f64;
-
-    let theta = vfov.to_radians();
-    let h = (theta * 0.5).tan();
-    let viewport_height = 2f64 * h * focal_len;
-    let viewport_width = aspect_ratio * viewport_height;
-
-    let viewport_u = Vec3::new(viewport_width, 0f64, 0f64);
-    let viewport_v = Vec3::new(0f64, -viewport_height, 0f64);
-
-    let pixel_delta_u = viewport_u / width;
-    let pixel_delta_v = viewport_v / height;
-    let viewport_upper_left =
-      center - Vec3::new(0., 0., focal_len) - viewport_u / 2. - viewport_v / 2.;
-    let pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
-
-    let pixel_samples_scale = 1f64 / SAMPLES_PER_PIXEL as f64;
-
+  pub fn new(
+    width: usize,
+    height: usize,
+    samples_per_pixel: i32,
+    max_depth: i32,
+    look_from: Vec3,
+    look_at: Vec3,
+    vup: Vec3,
+  ) -> Camera {
     Camera {
-      width: width as usize,
-      height: height as usize,
-      vfov,
-      center,
-      pixel00_loc,
-      pixel_delta_u,
-      pixel_delta_v,
-      pixel_samples_scale,
+      width,
+      height,
+      samples_per_pixel,
+      max_depth,
+      vfov: 90.,
+      center: Vec3::zero(),
+      look_from,
+      look_at,
+      u: Vec3::zero(),
+      v: Vec3::zero(),
+      w: Vec3::zero(),
+      vup,
+      pixel_delta_u: Vec3::zero(),
+      pixel_delta_v: Vec3::zero(),
+      pixel00_loc: Vec3::zero(),
+      pixel_samples_scale: 0.,
     }
   }
 
-  pub fn render<T>(&self, world: &T) -> Vec<u8>
+  pub fn initialize(&mut self) {
+    let width = self.width as f64;
+    let height = self.height as f64;
+
+    let aspect_ratio = width / height;
+    let focal_len = (self.look_from - self.look_at).len();
+
+    self.center = self.look_from;
+
+    let theta = self.vfov.to_radians();
+    let h = (theta / 2.).tan();
+    let viewport_height = 2. * h * focal_len;
+    let viewport_width = aspect_ratio * viewport_height;
+
+    self.w = (self.look_from - self.look_at).normalization();
+    self.u = Vec3::cross(self.vup, self.w).normalization();
+    self.v = Vec3::cross(self.w, self.u);
+
+    let viewport_u = viewport_width * self.u;
+    let viewport_v = viewport_height * -self.v;
+
+    let pixel_delta_u = viewport_u / width;
+    let pixel_delta_v = viewport_v / height;
+    let viewport_lower_left =
+      self.center - (focal_len * self.w) - viewport_u * 0.5 - viewport_v * 0.5;
+    self.pixel00_loc = viewport_lower_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+    self.pixel_samples_scale = 1f64 / self.samples_per_pixel as f64;
+    self.pixel_delta_u = pixel_delta_u;
+    self.pixel_delta_v = pixel_delta_v;
+  }
+
+  pub fn render<T>(&mut self, world: &T) -> Vec<u8>
   where
     T: Hittable,
   {
+    self.initialize();
     let image_size = self.width * self.height * 4;
     let mut vector = Vec::with_capacity(image_size);
     let mut rng = rand::rng();
@@ -68,9 +100,9 @@ impl Camera {
         let i = i as f64;
         let j = j as f64;
         let mut pixel_color = Color::zero();
-        for _ in 0..SAMPLES_PER_PIXEL {
+        for _ in 0..self.samples_per_pixel {
           let ray = self.ray(&mut rng, i, j);
-          pixel_color += Self::ray_color(ray, MAX_DEPTH, world);
+          pixel_color += Self::ray_color(ray, self.max_depth, world);
         }
         let (r, g, b) = color_to_byte(self.pixel_samples_scale * pixel_color);
         vector.push(r);
