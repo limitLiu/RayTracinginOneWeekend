@@ -36,3 +36,5 @@ impl Hittable for HittableList {
     ret
   }
 }
+
+unsafe impl Sync for HittableList {}

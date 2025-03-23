@@ -1,4 +1,5 @@
 use rand::{Rng, rngs::ThreadRng};
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 
 use super::color::{Color, color_to_byte};
 use super::hittable::Hittable;
@@ -100,29 +101,27 @@ impl Camera {
 
   pub fn render<T>(&mut self, world: &T) -> Vec<u8>
   where
-    T: Hittable,
+    T: Hittable + Sync,
   {
     self.initialize();
-    let image_size = self.width * self.height * 4;
-    let mut vector = Vec::with_capacity(image_size);
-    let mut rng = rand::rng();
-    for j in 0..self.height {
-      for i in 0..self.width {
-        let i = i as f64;
-        let j = j as f64;
-        let mut pixel_color = Color::zero();
-        for _ in 0..self.samples_per_pixel {
-          let ray = self.ray(&mut rng, i, j);
-          pixel_color += Self::ray_color(ray, self.max_depth, world);
+    let rows: Vec<u8> = (0..self.height)
+      .into_par_iter()
+      .flat_map(|j| {
+        let mut row_data = Vec::with_capacity(self.width * 4);
+        let mut rng = rand::rng();
+        for i in 0..self.width {
+          let mut pixel_color = Color::zero();
+          for _ in 0..self.samples_per_pixel {
+            let ray = self.ray(&mut rng, i as f64, j as f64);
+            pixel_color += Self::ray_color(ray, self.max_depth, world);
+          }
+          let (r, g, b) = color_to_byte(self.pixel_samples_scale * pixel_color);
+          row_data.extend_from_slice(&[r, g, b, 0xFF]);
         }
-        let (r, g, b) = color_to_byte(self.pixel_samples_scale * pixel_color);
-        vector.push(r);
-        vector.push(g);
-        vector.push(b);
-        vector.push(0xFF);
-      }
-    }
-    vector
+        row_data
+      })
+      .collect();
+    rows
   }
 
   fn ray(&self, rng: &mut ThreadRng, i: f64, j: f64) -> Ray {
