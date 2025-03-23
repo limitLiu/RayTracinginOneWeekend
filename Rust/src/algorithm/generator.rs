@@ -6,8 +6,7 @@ use super::sphere::Sphere;
 use super::vec3::Vec3;
 
 pub fn generate_raw_data(width: usize, height: usize) -> Vec<u8> {
-  let camera = Camera::new(width, height);
-
+  let camera = Camera::new(width, height, 90.);
   let material_ground = Lambertian::new(Color::new(0.8, 0.8, 0.0));
   let material_center = Lambertian::new(Color::new(0.1, 0.2, 0.5));
   let material_left = Dielectric::new(1. / 1.33);

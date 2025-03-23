@@ -54,15 +54,11 @@
 		};
 		0F0C53982D70C3B500C86C70 /* RayTracinginOneWeekendTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = RayTracinginOneWeekendTests;
 			sourceTree = "<group>";
 		};
 		0F0C53A22D70C3B500C86C70 /* RayTracinginOneWeekendUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = RayTracinginOneWeekendUITests;
 			sourceTree = "<group>";
 		};
@@ -120,7 +116,6 @@
 			children = (
 				64B09AD5BA01A03046F3FB95 /* material */,
 			);
-			name = algorithm;
 			path = algorithm;
 			sourceTree = "<group>";
 		};
@@ -128,7 +123,6 @@
 			isa = PBXGroup;
 			children = (
 			);
-			name = material;
 			path = material;
 			sourceTree = "<group>";
 		};
@@ -137,7 +131,6 @@
 			children = (
 				DB31F7C8180B4E0772BE3A79 /* src */,
 			);
-			name = Rust;
 			path = Rust;
 			sourceTree = "<group>";
 		};
@@ -146,7 +139,6 @@
 			children = (
 				645D81B4C4A5C8D86988E1A5 /* algorithm */,
 			);
-			name = src;
 			path = src;
 			sourceTree = "<group>";
 		};
@@ -252,7 +244,7 @@
 			mainGroup = 0F0C53762D70C3B400C86C70;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Algorithm" */,
+				0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Rust/Algorithm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0F0C53802D70C3B400C86C70 /* Products */;
@@ -341,8 +333,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -370,8 +361,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -619,7 +609,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Algorithm" */ = {
+		0F0C53B92D70C47A00C86C70 /* XCLocalSwiftPackageReference "Rust/Algorithm" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Rust/Algorithm;
 		};

@@ -10,6 +10,7 @@ use super::vec3::Vec3;
 pub struct Camera {
   pub width: usize,
   pub height: usize,
+  pub vfov: f64,
 
   center: Vec3,
   pixel_delta_u: Vec3,
@@ -19,7 +20,7 @@ pub struct Camera {
 }
 
 impl Camera {
-  pub fn new(width: usize, height: usize) -> Camera {
+  pub fn new(width: usize, height: usize, vfov: f64) -> Camera {
     let w = width as f64;
     let h = height as f64;
 
@@ -31,19 +32,20 @@ impl Camera {
     let viewport_width = aspect_ratio * viewport_height;
 
     let viewport_u = Vec3::new(viewport_width, 0f64, 0f64);
-    let viewport_v = Vec3::new(0f64, viewport_height, 0f64);
+    let viewport_v = Vec3::new(0f64, -viewport_height, 0f64);
 
     let pixel_delta_u = viewport_u / w;
     let pixel_delta_v = viewport_v / h;
-    let viewport_lower_left =
+    let viewport_upper_left =
       center - Vec3::new(0., 0., focal_len) - viewport_u / 2. - viewport_v / 2.;
-    let pixel00_loc = viewport_lower_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+    let pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
     let pixel_samples_scale = 1f64 / SAMPLES_PER_PIXEL as f64;
 
     Camera {
       width,
       height,
+      vfov,
       center,
       pixel00_loc,
       pixel_delta_u,
